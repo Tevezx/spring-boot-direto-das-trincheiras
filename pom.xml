@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>4.1.0</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>academy.devdojo</groupId>
+
+	<!-- aqui passamos o nome da pasta que esse projeto esta dentro, no caso: spring-boot-direto-das-trincheiras -->
+	<artifactId>spring-boot-direto-das-trincheiras</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+
+	<!-- dizendo que ele é apenas um pom -->
+	<packaging>pom</packaging>
+
+	<!-- dentro do meu modulo, eu tenho o anime service -->
+	<!-- fazemos isso para o java reconhecer que o anime service é um project maven -->
+	<modules>
+		<module>anime-service</module>
+	</modules>
+
+</project>
