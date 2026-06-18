@@ -1,9 +1,24 @@
 spring:
   application:
     name: anime-service
+  web:
+    error:
+      include-stacktrace: NEVER # Dessa forma, no postman nao aparece o stack trace
+
+  # Habilitando a opcao de utilizar as threads virtuais
+  threads:
+    virtual:
+      enabled: true
 
 # O server serve para setar qual o index da rota
 server:
   servlet:
     context-path: / #${spring.application.name} se usarmos dessa forma, ficaria http://localhost:8080/anime-service
 
+  # Temos 200 threads disponiveis por padrao, elas definem a velociade de entrada e saida da requisicao
+  # São chamadas de threads virtuais, responde de forma bem rapida, basicamente instantanea
+  # A memoria delas sao mais baixas essa é a diferenca, quanto menos threads virtuais = menos recursos utilizados do hardware
+  # Normalmente sao utilizadas com entrada e saida de dados (requisisoes)
+  tomcat:
+    threads:
+      max: 20
