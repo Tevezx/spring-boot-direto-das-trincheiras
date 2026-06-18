@@ -1,3 +1,7 @@
 spring:
   application:
     name: anime-service
+# O server serve para setar qual o index da rota
+server:
+  servlet:
+    context-path: / #${spring.application.name} se usarmos dessa forma, ficaria http://localhost:8080/anime-service
