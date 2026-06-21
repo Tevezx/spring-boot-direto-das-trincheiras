@@ -1,9 +1,6 @@
 package academy.devdojo.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -35,5 +32,15 @@ public class HeroController {
                 .stream()
                 .filter(names::contains)
                 .toList();
+    }
+
+    //PathVariable -> a url pede um nome, a partir do nome eu retorno todos os dados daquele super heroi em especifico
+    @GetMapping("{name}")
+    public String findByName(@PathVariable String name){
+        return HEROES
+                .stream()
+                .filter(h -> h.equalsIgnoreCase(name))
+                .findFirst()
+                .orElse("");
     }
 }
