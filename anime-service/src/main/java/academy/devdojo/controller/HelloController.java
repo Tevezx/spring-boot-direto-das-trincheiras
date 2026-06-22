@@ -1,14 +1,16 @@
 package academy.devdojo.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 // Todos os metodos vao retornar algo para o responseBody
 @RestController
 
-// Dessa forma definimos que todas as rotas dessa classe tem greetings/
-@RequestMapping(value = "greetings")
+// Dessa forma definimos que todas as rotas dessa classe tem v1/greetings/
+@RequestMapping("v1/greetings")
+@Slf4j
 public class HelloController {
 
     // get mapping significa que quando eu estiver acessando um get para esse endpoint essa funcao ira ser executada
@@ -19,8 +21,16 @@ public class HelloController {
     // @Getmapping(value = {"hi", "hi/"})
 
     // Antigamente se utilizava o RequestMapping(method = RequestMethord.GET, value = "hi")
-    @GetMapping("hi")
+    @GetMapping()
     public String hi() {
         return "Hello World";
+    }
+
+    // Pode colocar @PostMapping("save"), porem nao é boa pratica
+    @PostMapping()
+    // @RequestBody -> pega o que esta no corpo daquela requisicao
+    public Long save(@RequestBody String name) {
+        log.info("save {}", name);
+        return ThreadLocalRandom.current().nextLong(1, 1000);
     }
 }

@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 @RestController
 // Versionamento -> significa a versao 1 do animeController
@@ -23,13 +24,13 @@ public class AnimeController {
     // Error 500 -> erro no codigo, algo que o desenvolvedor deixou passar
     @GetMapping()
     public List<Anime> listAll() {
-        return Anime.animeList();
+        return Anime.getAnimeList();
     }
 
     // required false -> quebrando funcionalidades existentes para quem esta consumindo a api
     @GetMapping("filterName")
     public List<Anime> listAllAnimeName(@RequestParam(required = false) String name) {
-        var animes = Anime.animeList();
+        var animes = Anime.getAnimeList();
         if (name == null) return animes;
 
         return animes.stream().filter(anime -> anime.getName().equalsIgnoreCase(name)).toList();
@@ -37,8 +38,17 @@ public class AnimeController {
 
     @GetMapping("{id}")
     public Anime findById(@PathVariable Long id) {
-        var animes = Anime.animeList();
+        var animes = Anime.getAnimeList();
         // dessa forma, encontro na lista o anime e ja mando logo o primeiro
         return animes.stream().filter(anime -> anime.getId().equals(id)).findFirst().orElse(null);
+    }
+
+    // Idempotente -> Só pode ser executado uma vez
+    // O post nao é idempotente
+    @PostMapping()
+    public Anime save(@RequestBody Anime anime) {
+        anime.setId(ThreadLocalRandom.current().nextLong(1000L));
+        Anime.getAnimeList().add(anime);
+        return anime;
     }
 }

@@ -1,24 +1,28 @@
 package academy.devdojo.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@Setter
+@AllArgsConstructor
 public class Anime {
-    private final Long id;
-    private final String name;
+    private Long id;
+    private String name;
 
-    public Anime(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
+    @Getter
+    private static List<Anime> animeList = new ArrayList<>();
 
-    public static List<Anime> animeList() {
+    static {
         Anime anime1 = new Anime(1L, "Naruto");
         Anime anime2 = new Anime(2L, "Boruto");
         Anime anime3 = new Anime(3L, "Attack On Titan");
 
-        return List.of(anime1, anime2, anime3);
+        animeList.addAll(List.of(anime1, anime2, anime3));
     }
+
 }
