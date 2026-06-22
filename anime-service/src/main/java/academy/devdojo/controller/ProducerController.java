@@ -1,6 +1,8 @@
 package academy.devdojo.controller;
 
 import academy.devdojo.domain.Producer;
+import academy.devdojo.request.ProducerPostRequest;
+import academy.devdojo.response.ProducerGetResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -8,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -40,14 +43,25 @@ public class ProducerController {
     // headers -> normalmente significa a chave da api que estamos criando, ele so mapeia a requisicao se esse header for encontrado (api-key)
     // @RequestHeader -> Consigo visualizar os headers que estão vindo da requisicao
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, headers = "x-api-key")
-    public ResponseEntity<Producer> save(@RequestBody Producer producer, @RequestHeader HttpHeaders headers) {
+    public ResponseEntity<ProducerGetResponse> save(@RequestBody ProducerPostRequest producerPostRequest, @RequestHeader HttpHeaders headers) {
         log.info("{}", headers);
-        producer.setId(ThreadLocalRandom.current().nextLong(1000L));
+
+        Producer producer = Producer.builder()
+                .id(ThreadLocalRandom.current().nextLong(1000L))
+                .name(producerPostRequest.getName())
+                .createdAt(LocalDateTime.now())
+                .build();
         Producer.getProducers().add(producer);
+
+        ProducerGetResponse producerGetResponse = ProducerGetResponse.builder()
+                .id(producer.getId())
+                .name(producer.getName())
+                .createdAt(producer.getCreatedAt())
+                .build();
 
         // Na classe eu coloco ResponseEntity<Producer>, pois estou retornando um status de criacao
         // Retorno o status da requisicao, consigo retornar qualquer status http
-        return ResponseEntity.status(HttpStatus.CREATED).body(producer);
+        // return ResponseEntity.status(HttpStatus.CREATED).body(producer);
 
         // forma abreviada de retornar o http 200
         // return ResponseEntity.ok(producer);
@@ -57,8 +71,8 @@ public class ProducerController {
         // return ResponseEntity.noContent().build();
 
         // Consigo adicionar headers
-        // var responseHeaders = new HttpHeaders();
-        // responseHeaders.add("Authorization", "my key");
-        // return ResponseEntity.status(HttpStatus.CREATED).headers(responseHeaders).body(producer);
+        var responseHeaders = new HttpHeaders();
+        responseHeaders.add("Authorization", "my key");
+        return ResponseEntity.status(HttpStatus.CREATED).headers(responseHeaders).body(producerGetResponse);
     }
 }
