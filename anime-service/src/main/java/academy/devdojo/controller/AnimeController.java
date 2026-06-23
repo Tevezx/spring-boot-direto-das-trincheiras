@@ -76,4 +76,6 @@ public class AnimeController {
         Anime.getAnimeList().add(animePostRequests);
         return ResponseEntity.status(201).body(animePostResponse);
     }
+
+
 }
