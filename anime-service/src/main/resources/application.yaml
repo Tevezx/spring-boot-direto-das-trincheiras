@@ -10,6 +10,11 @@ spring:
     virtual:
       enabled: true
 
+#Adicionando logs
+logging:
+  level:
+    academy.devdojo: debug
+
 # O server serve para setar qual o index da rota
 server:
   servlet:
