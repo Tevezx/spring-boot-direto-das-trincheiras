@@ -3,11 +3,14 @@ package academy.devdojo.controller;
 import academy.devdojo.domain.Anime;
 import academy.devdojo.mapper.AnimeMapper;
 import academy.devdojo.request.AnimePostRequest;
+import academy.devdojo.request.AnimePutRequest;
 import academy.devdojo.response.AnimeGetResponse;
 import academy.devdojo.response.AnimePostResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -16,7 +19,7 @@ import java.util.List;
 @RequestMapping("v1/animes")
 @Slf4j
 public class AnimeController {
-    private static final AnimeMapper Mapper = AnimeMapper.INSTANCE;
+    private static final AnimeMapper MAPPER = AnimeMapper.INSTANCE;
 
     // De acordo com os testes do postman, esta demorando 2ms para a requisicao entrar e sair com 100 usuarios testando
 //    @GetMapping()
@@ -60,8 +63,8 @@ public class AnimeController {
                 .stream()
                 .filter(anime -> anime.getId().equals(id))
                 .findFirst()
-                .map(Mapper::toAnimeGetResponse)
-                .orElse(null);
+                .map(MAPPER::toAnimeGetResponse)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Anime not found"));
         return ResponseEntity.ok().body(animeGetResponse);
     }
 
@@ -70,12 +73,39 @@ public class AnimeController {
     @PostMapping()
     public ResponseEntity<AnimePostResponse> save(@RequestBody AnimePostRequest animePostRequest) {
         log.debug("Request to save anime: {}", animePostRequest.getName());
-        var animePostRequests = Mapper.toAnimePostRequest(animePostRequest);
-        var animePostResponse = Mapper.toAnimePostResponse(animePostRequests);
+        var animePostRequests = MAPPER.toAnimePostRequest(animePostRequest);
+        var animePostResponse = MAPPER.toAnimePostResponse(animePostRequests);
 
         Anime.getAnimeList().add(animePostRequests);
         return ResponseEntity.status(201).body(animePostResponse);
     }
 
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+        log.debug("Request to delete anime by id: {}", id);
+        var animeToDelete = Anime.getAnimeList()
+                .stream()
+                .filter(anime -> anime.getId().equals(id)).findFirst()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Anime not found"));
+        Anime.getAnimeList().remove(animeToDelete);
 
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping()
+    public ResponseEntity<Void> update(@RequestBody AnimePutRequest animePutRequest) {
+        log.debug("Request to updated anime: {}", animePutRequest.getName());
+
+        var animeToDelete = Anime.getAnimeList()
+                .stream()
+                .filter(anime -> anime.getId().equals(animePutRequest.getId()))
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Anime not found"));
+
+        var animeUpdated = MAPPER.toAnime(animePutRequest);
+        Anime.getAnimeList().remove(animeToDelete);
+        Anime.getAnimeList().add(animeUpdated);
+
+        return ResponseEntity.noContent().build();
+    }
 }
