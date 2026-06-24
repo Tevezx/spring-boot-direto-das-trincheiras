@@ -22,7 +22,7 @@ public interface ProducerMapper {
     Producer toProducer(ProducerPostRequest postRequest);
     ProducerPostResponse toProducerPostResponse(Producer producer);
 
-    Producer toProducerUpdated(ProducerPutRequest producerPutRequest, LocalDateTime createdAt);
+    Producer toProducerUpdated(ProducerPutRequest producerPutRequest);
 
     // primeiro é quem desejamos retornar
     ProducerGetResponse toProducerGetResponse(Producer producer);
