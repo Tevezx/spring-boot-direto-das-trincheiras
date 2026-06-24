@@ -1,8 +1,10 @@
 package academy.devdojo.controller;
 
+import academy.devdojo.domain.Anime;
 import academy.devdojo.domain.Producer;
 import academy.devdojo.mapper.ProducerMapper;
 import academy.devdojo.request.ProducerPostRequest;
+import academy.devdojo.request.ProducerPutRequest;
 import academy.devdojo.response.ProducerGetResponse;
 import academy.devdojo.response.ProducerPostResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -103,6 +106,28 @@ public class ProducerController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Producer not found"));
 
         Producer.getProducers().remove(producerDelete);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping()
+    public ResponseEntity<Void> update(@RequestBody ProducerPutRequest producerPutRequest) {
+        log.debug("Request to updated producer: {}", producerPutRequest.getName());
+
+        // Filtrando o producerDelete para o mesmo id do producerPutRequest
+        var producerToDelete = Producer.getProducers()
+                .stream()
+                .filter(producer -> producer.getId().equals(producerPutRequest.getId()))
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Producer not found"));
+
+        // Transformando o producerPutRequest em um producer
+        var producerUpdated = MAPPER.toProducerUpdated(producerPutRequest, producerToDelete.getCreatedAt());
+
+        // Removendo o producer que encontrei do mesmo id do producerPutRequest
+        Producer.getProducers().remove(producerToDelete);
+
+        // Adicionando o producer novo que passei no producerPutRequest
+        Producer.getProducers().add(producerUpdated);
         return ResponseEntity.noContent().build();
     }
 
