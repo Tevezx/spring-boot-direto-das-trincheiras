@@ -2,7 +2,9 @@ package academy.devdojo.service;
 
 import academy.devdojo.domain.Producer;
 import academy.devdojo.repository.ProducerHardCodedRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -11,13 +13,16 @@ import java.util.List;
 // Faço uma lógica e retorno para quem esta chamando
 // Pego os dados e repasso
 // Pego os dados de uma api de terceiros..
+
+@Service
 public class ProducerService {
     // Preciso de um repository
     private final ProducerHardCodedRepository repository;
 
     // Todas as vezes que eu criar um ProducerService automaticamente vou criar um repository
-    public ProducerService() {
-        this.repository = new ProducerHardCodedRepository();
+    @Autowired // -> siginifica que se eu chamar o ProducerService, automaticamente eu crio o repository
+    public ProducerService(ProducerHardCodedRepository repository) {
+        this.repository = repository;
     }
 
     // Uma lógica de negocio, se o name for null eu retorno tudo, se nao, eu retorno a busca do nome em especifico

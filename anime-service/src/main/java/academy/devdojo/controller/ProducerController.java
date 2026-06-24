@@ -1,44 +1,44 @@
 package academy.devdojo.controller;
 
-import academy.devdojo.domain.Producer;
 import academy.devdojo.mapper.ProducerMapper;
 import academy.devdojo.request.ProducerPostRequest;
 import academy.devdojo.request.ProducerPutRequest;
 import academy.devdojo.response.ProducerGetResponse;
 import academy.devdojo.response.ProducerPostResponse;
 import academy.devdojo.service.ProducerService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
-@RestController
-
+@RestController // -> por padão ele é um bean
+@RequiredArgsConstructor // -> cria um construtor com todos os atributos que tenham final
 @RequestMapping("v1/producers")
 @Slf4j
 public class ProducerController {
-    private static final ProducerMapper MAPPER = ProducerMapper.INSTANCE;
+    private final ProducerMapper mapper;
 
     // Toda controller precisa de um service determinado a ela
     // O service vai conter um repository ligado a ele
-    private ProducerService service;
+    private final ProducerService service;
 
-    public ProducerController() {
-        this.service = new ProducerService();
-    }
+    //@Autowired @Autowired no construtor, nunca no atributo
+    //Pois ele serve para deixar o atributo com facilidade para testes e imultavel
+    //public ProducerController(ProducerService service) {
+    //  this.service = service;
+    //}
 
     @GetMapping()
-    public ResponseEntity<List<ProducerGetResponse>> listAll(@RequestParam (required = false) String name) {
+    public ResponseEntity<List<ProducerGetResponse>> listAll(@RequestParam(required = false) String name) {
         log.debug("Finding all producers");
 
         var producers = service.findAll(name);
-        List<ProducerGetResponse> producerGetResponses = MAPPER.toProducerGetResponseList(producers);
+        List<ProducerGetResponse> producerGetResponses = mapper.toProducerGetResponseList(producers);
 
         return ResponseEntity.ok().body(producerGetResponses);
     }
@@ -48,7 +48,7 @@ public class ProducerController {
         log.debug("Find by producer id: {}", id);
 
         var producer = service.findByIdOrThrowNotFound(id);
-        var producerGetResponse = MAPPER.toProducerGetResponse(producer);
+        var producerGetResponse = mapper.toProducerGetResponse(producer);
 
         return ResponseEntity.ok().body(producerGetResponse);
     }
@@ -61,9 +61,9 @@ public class ProducerController {
     public ResponseEntity<ProducerPostResponse> save(@RequestBody ProducerPostRequest producerPostRequest, @RequestHeader HttpHeaders headers) {
         log.info("{}", headers);
 
-        var producer = MAPPER.toProducer(producerPostRequest);
+        var producer = mapper.toProducer(producerPostRequest);
         var producerSaved = service.save(producer);
-        var producerPostResponse = MAPPER.toProducerPostResponse(producerSaved);
+        var producerPostResponse = mapper.toProducerPostResponse(producerSaved);
 
         // Na classe eu coloco ResponseEntity<Producer>, pois estou retornando um status de criacao
         // Retorno o status da requisicao, consigo retornar qualquer status http
@@ -95,7 +95,7 @@ public class ProducerController {
     public ResponseEntity<Void> update(@RequestBody ProducerPutRequest producerPutRequest) {
         log.debug("Request to updated producer: {}", producerPutRequest.getName());
 
-        var producer = MAPPER.toProducerUpdated(producerPutRequest);
+        var producer = mapper.toProducerUpdated(producerPutRequest);
         service.update(producer);
 
         return ResponseEntity.noContent().build();

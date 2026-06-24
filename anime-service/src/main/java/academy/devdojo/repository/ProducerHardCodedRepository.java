@@ -1,6 +1,7 @@
 package academy.devdojo.repository;
 
 import academy.devdojo.domain.Producer;
+import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -9,6 +10,12 @@ import java.util.Optional;
 
 // Um repository guarda metodos feitos pelo banco de dados (Consultas, Inserções, Updates e etc)
 
+// @Component -> detecta essa classe como um spring bean, o spring faz um scan e detecta
+// Se o spring identifica com bean, ele faz um new pra voce, ou seja, nao precisamos criar as classes
+// @Repository -> faz a mesma coisa, pois ele é um component, porém especificamente em repository
+// @Service -> faz a mesma coisa, pois ele é um component, porem utilizado em services
+
+@Repository
 public class ProducerHardCodedRepository {
     private final static List<Producer> PRODUCERS = new ArrayList<>();
 
