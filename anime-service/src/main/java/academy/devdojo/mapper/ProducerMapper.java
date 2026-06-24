@@ -2,12 +2,14 @@ package academy.devdojo.mapper;
 
 import academy.devdojo.domain.Producer;
 import academy.devdojo.request.ProducerPostRequest;
+import academy.devdojo.request.ProducerPutRequest;
 import academy.devdojo.response.ProducerGetResponse;
 import academy.devdojo.response.ProducerPostResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
@@ -20,7 +22,10 @@ public interface ProducerMapper {
     Producer toProducer(ProducerPostRequest postRequest);
     ProducerPostResponse toProducerPostResponse(Producer producer);
 
+    Producer toProducerUpdated(ProducerPutRequest producerPutRequest, LocalDateTime createdAt);
+
     // primeiro é quem desejamos retornar
     ProducerGetResponse toProducerGetResponse(Producer producer);
     List<ProducerGetResponse> toProducerGetResponseList(List<Producer> producers);
+
 }
