@@ -1,6 +1,9 @@
 package academy.devdojo.repository;
 
 import academy.devdojo.domain.Producer;
+import external.dependency.Connection;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -16,8 +19,13 @@ import java.util.Optional;
 // @Service -> faz a mesma coisa, pois ele é um component, porem utilizado em services
 
 @Repository
+@RequiredArgsConstructor
+@Log4j2
 public class ProducerHardCodedRepository {
     private final static List<Producer> PRODUCERS = new ArrayList<>();
+
+    // Posso chamar como o nome do construtor que eu passo no connection configuration
+    private final Connection connectionMongo;
 
     static {
         var tarantino = Producer.builder().id(1L).name("Tarantino").createdAt(LocalDateTime.now()).build();
@@ -28,6 +36,7 @@ public class ProducerHardCodedRepository {
     }
 
     public List<Producer> findAll() {
+        log.debug(connectionMongo);
         return PRODUCERS;
     }
 
