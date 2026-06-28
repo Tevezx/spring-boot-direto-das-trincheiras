@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ConnectionConfiguration {
 
-    // Agora ele pega um objeto valida e injeta dentro da minha classe conection para que meu repository pegue
+    // Agora ele pega um objeto valido e injeta dentro da minha classe conection para que meu repository pegue
     @Bean
     // @Primary Se tiver dois, utiliza esse como padrao
     public Connection connectionMySql() {
