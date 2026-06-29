@@ -22,6 +22,7 @@ import java.util.List;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ProducerHardCodedRepositoryTest {
     @InjectMocks // estou fazendo a injecao de dependencias para esse atributo, dessa forma nao preciso dar new nele
+    // InjectMocks serve para dar mock na classe que eu quero testar
     private ProducerHardCodedRepository repository;
 
     // Teste sempre é padrão (nem publico e nem privado e void)
