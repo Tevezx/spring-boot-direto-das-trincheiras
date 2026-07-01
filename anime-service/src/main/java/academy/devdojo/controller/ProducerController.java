@@ -34,7 +34,7 @@ public class ProducerController {
     //}
 
     @GetMapping()
-    public ResponseEntity<List<ProducerGetResponse>> listAll(@RequestParam(required = false) String name) {
+    public ResponseEntity<List<ProducerGetResponse>> findAll(@RequestParam(required = false) String name) {
         log.debug("Finding all producers");
 
         var producers = service.findAll(name);
@@ -61,7 +61,7 @@ public class ProducerController {
     public ResponseEntity<ProducerPostResponse> save(@RequestBody ProducerPostRequest producerPostRequest, @RequestHeader HttpHeaders headers) {
         log.info("{}", headers);
 
-        var producer = mapper.toProducer(producerPostRequest);
+        var producer = mapper.toProducerPostRequest(producerPostRequest);
         var producerSaved = service.save(producer);
         var producerPostResponse = mapper.toProducerPostResponse(producerSaved);
 

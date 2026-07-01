@@ -20,7 +20,7 @@ public interface AnimeMapper {
     AnimePostResponse toAnimePostResponse(Anime anime);
 
     // Update
-    Anime toAnime (AnimePutRequest animePutRequest);
+    Anime toAnimePutRequest (AnimePutRequest animePutRequest);
 
     AnimeGetResponse toAnimeGetResponse(Anime anime);
     List<AnimeGetResponse> toAnimeGetResonseList(List<Anime> animes);

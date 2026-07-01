@@ -60,10 +60,11 @@ public class AnimeController {
     public ResponseEntity<AnimePostResponse> save(@RequestBody AnimePostRequest animePostRequest) {
         log.debug("Request to save anime: {}", animePostRequest.getName());
 
-        var animePostRequests = mapper.toAnimePostRequest(animePostRequest);
-        var animePostResponse = mapper.toAnimePostResponse(animePostRequests);
+        var anime = mapper.toAnimePostRequest(animePostRequest);
+        var animeSaved = animeService.save(anime);
 
-        animeService.save(animePostRequests);
+        var animePostResponse = mapper.toAnimePostResponse(animeSaved);
+
         return ResponseEntity.status(201).body(animePostResponse);
     }
 
@@ -80,7 +81,7 @@ public class AnimeController {
     public ResponseEntity<Void> update(@RequestBody AnimePutRequest animePutRequest) {
         log.debug("Request to updated anime: {}", animePutRequest.getName());
 
-        var anime = mapper.toAnime(animePutRequest);
+        var anime = mapper.toAnimePutRequest(animePutRequest);
         animeService.update(anime);
 
         return ResponseEntity.noContent().build();
