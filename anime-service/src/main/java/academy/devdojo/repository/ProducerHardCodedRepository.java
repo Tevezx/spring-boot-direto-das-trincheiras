@@ -23,10 +23,10 @@ public class ProducerHardCodedRepository {
 
     private final ProducerData producerData;
     // Posso chamar como o nome do construtor que eu passo no connection configuration
-    // private final Connection connectionMongo;
+    private final Connection connection;
 
     public List<Producer> findAll() {
-//      log.debug(connectionMongo);
+        log.debug("Connection: {}", connection);
         return producerData.getProducers();
     }
 

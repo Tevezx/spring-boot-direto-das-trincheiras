@@ -1,0 +1,5 @@
+# Cria como se fosse um .env.dev utilizando mongodb
+database:
+   url: localhost:3306
+   username: rootMongo
+   password: rootMongo

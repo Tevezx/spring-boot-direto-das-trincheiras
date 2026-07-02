@@ -1,4 +1,8 @@
 spring:
+  # Dessa forma, estou ativando o profile mongo, que é o profile que contem as configuracoes do banco de dados mongo
+#  profiles:
+#    active:
+#      - mongo
   application:
     name: anime-service
   web:
@@ -27,3 +31,10 @@ server:
   tomcat:
     threads:
       max: 20
+
+# Cria como se fosse um .env.dev
+database:
+  postgres:
+    url: localhost:3306
+    username: rootMySql
+    password: rootMySql

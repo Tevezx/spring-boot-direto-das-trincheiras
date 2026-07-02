@@ -1,0 +1,5 @@
+# Cria como se fosse um .env.dev
+database:
+   url: localhost:3306
+   username: rootMySql
+   password: rootMySql
