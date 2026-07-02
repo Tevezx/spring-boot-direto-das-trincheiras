@@ -1,5 +1,6 @@
 package academy.devdojo.repository;
 
+import academy.devdojo.comons.ProducerUtils;
 import academy.devdojo.domain.Producer;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
@@ -8,6 +9,7 @@ import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -21,8 +23,8 @@ import java.util.List;
 // Possibilita deixar os testes em ordem
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ProducerHardCodedRepositoryTest {
-    @InjectMocks // estou fazendo a injecao de dependencias para esse atributo, dessa forma nao preciso dar new nele
     // InjectMocks serve para dar mock na classe que eu quero testar
+    @InjectMocks // estou fazendo a injecao de dependencias para esse atributo, dessa forma nao preciso dar new nele
     private ProducerHardCodedRepository repository;
 
     // Teste sempre é padrão (nem publico e nem privado e void)
@@ -30,16 +32,17 @@ class ProducerHardCodedRepositoryTest {
     // Se encontrar esse atributo no repository, mock ele
     @Mock
     private ProducerData producerData;
-    private final List<Producer> producerList = new ArrayList<>();
+    private List<Producer> producerList = new ArrayList<>();
 
+    // Tem que ser injectmocks pois estamos utilizando mockito aqui
+    // Para o mockito, o injectmocks ja esta injetando as dependencias do spring nesse atributo
+    @InjectMocks
+    private ProducerUtils producerUtils;
+
+    // esse metodo vai ser executado primeiro do que qualquer outro metodo
     @BeforeEach
-        // esse metodo vai ser executado primeiro do que qualquer outro metodo
     void init() {
-        var ufotable = Producer.builder().id(1L).name("Ufotable").createdAt(LocalDateTime.now()).build();
-        var witStudio = Producer.builder().id(2L).name("WitStudio").createdAt(LocalDateTime.now()).build();
-        var studioGhibli = Producer.builder().id(3L).name("Studio Ghibli").createdAt(LocalDateTime.now()).build();
-
-        producerList.addAll(List.of(ufotable, witStudio, studioGhibli));
+        producerList = producerUtils.newProducerList();
     }
 
     // Testando metodo findAll para verificar se ele realmente retorna todos os dados de uma lista

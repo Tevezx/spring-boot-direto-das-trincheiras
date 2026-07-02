@@ -1,5 +1,6 @@
 package academy.devdojo.service;
 
+import academy.devdojo.comons.AnimeUtils;
 import academy.devdojo.domain.Anime;
 import academy.devdojo.repository.AnimeHardCodedRepository;
 import org.assertj.core.api.Assertions;
@@ -26,13 +27,12 @@ class AnimeServiceTest {
     private AnimeHardCodedRepository repository;
     private List<Anime> animeList = new ArrayList<>();
 
+    @InjectMocks
+    private AnimeUtils animeUtils;
+
     @BeforeEach
     void init() {
-        var naruto = Anime.builder().id(1L).name("Naruto").build();
-        var boruto = Anime.builder().id(2L).name("Boruto").build();
-        var attackOnTittan = Anime.builder().id(3L).name("Attack On Tittan").build();
-
-        animeList.addAll(List.of(naruto, boruto, attackOnTittan));
+        animeList = animeUtils.newAnimeList();
     }
 
     @Test
