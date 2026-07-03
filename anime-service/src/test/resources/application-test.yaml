@@ -1,5 +1,5 @@
 # Cria como se fosse um .env.dev
 database:
-   url: test:9090
-   username: test
-   password: test
+  url: test:9090
+  username: test
+  password: test

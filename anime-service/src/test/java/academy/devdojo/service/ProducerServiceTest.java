@@ -6,9 +6,11 @@ import academy.devdojo.repository.ProducerHardCodedRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.ArgumentMatchers;
+import org.mockito.BDDMockito;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
@@ -148,7 +150,8 @@ class ProducerServiceTest {
     @Order(9)
     void update_updateProducer_WhenSucessFull() {
         var producerToUpdate = producerList.getFirst();
-        producerToUpdate.setName("Pixar");producerToUpdate.setName("Pixar");
+        producerToUpdate.setName("Pixar");
+        producerToUpdate.setName("Pixar");
         BDDMockito.when(repository.findById(producerToUpdate.getId())).thenReturn(Optional.of(producerToUpdate));
 
         service.update(producerToUpdate);

@@ -1,11 +1,8 @@
 package academy.devdojo.comons;
 
 import academy.devdojo.domain.Anime;
-import academy.devdojo.domain.Producer;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 

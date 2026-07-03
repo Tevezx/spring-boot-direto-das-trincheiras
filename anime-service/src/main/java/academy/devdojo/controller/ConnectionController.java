@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("v1/connections")
 @AllArgsConstructor
 public class ConnectionController {
-    
+
     private Connection connection;
 
     @GetMapping()

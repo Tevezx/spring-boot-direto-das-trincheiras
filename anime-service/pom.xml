@@ -31,6 +31,11 @@
         <org.mapstruct.version>1.6.3</org.mapstruct.version>
     </properties>
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+        </dependency>
+
         <!-- essa dependencia serve para realizar os dtos de forma facilitada -->
         <dependency>
             <groupId>org.mapstruct</groupId>

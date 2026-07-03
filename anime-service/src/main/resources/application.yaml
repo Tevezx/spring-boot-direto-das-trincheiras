@@ -1,8 +1,8 @@
 spring:
   # Dessa forma, estou ativando o profile mongo, que é o profile que contem as configuracoes do banco de dados mongo
-#  profiles:
-#    active:
-#      - mongo
+  #  profiles:
+  #    active:
+  #      - mongo
   application:
     name: anime-service
   web:
@@ -34,7 +34,8 @@ server:
 
 # Cria como se fosse um .env.dev
 database:
-  postgres:
-    url: localhost:3306
-    username: rootMySql
-    password: rootMySql
+  # D T A P -> Desenvolvimento, teste, homologacao, producao
+  url: ${DB_URL:localhost}:${DB_PORT:3306}
+  # ':' serve para dizer que a variavel de ambiente é opcional, caso nao exista, ele vai pegar o valor default
+  username: ${LOCAL_USERNAME:Carlos}
+  password: ${LOCAL_PASSWORD:123456}

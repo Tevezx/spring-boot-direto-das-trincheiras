@@ -22,20 +22,20 @@ public class AnimeService {
         return name != null ? repository.listAllAnimeName(name) : repository.listAll();
     }
 
-    public Anime findByIdOrThrowNotFound(Long id){
+    public Anime findByIdOrThrowNotFound(Long id) {
         return repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Anime not Found"));
     }
 
-    public Anime save(Anime anime){
+    public Anime save(Anime anime) {
         return repository.save(anime);
     }
 
-    public void deleteById(Long id){
+    public void deleteById(Long id) {
         Anime animeDeleted = findByIdOrThrowNotFound(id);
         repository.deleteById(animeDeleted.getId());
     }
 
-    public void update(Anime anime){
+    public void update(Anime anime) {
         Anime animeUpdate = findByIdOrThrowNotFound(anime.getId());
         repository.update(animeUpdate);
     }

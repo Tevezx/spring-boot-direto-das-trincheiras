@@ -3,7 +3,6 @@ package academy.devdojo.controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 @RestController
 @RequestMapping("v1/heroes")
@@ -19,7 +18,7 @@ public class HeroController {
     // required false -> significa que eu nao preciso exatamente retornar algo
     // defaultValue -> valor default que sera exibido caso nao haja nenhum filtro
     @GetMapping("filter")
-    public List<String> listAllHeroesParam(@RequestParam (required = false) String name) {
+    public List<String> listAllHeroesParam(@RequestParam(required = false) String name) {
         return HEROES
                 .stream()
                 .filter(h -> h.equalsIgnoreCase(name))
@@ -37,7 +36,7 @@ public class HeroController {
 
     //PathVariable -> a url pede um nome, a partir do nome eu retorno todos os dados daquele super heroi em especifico
     @GetMapping("{name}")
-    public String findByName(@PathVariable String name){
+    public String findByName(@PathVariable String name) {
         return HEROES
                 .stream()
                 .filter(h -> h.equalsIgnoreCase(name))
