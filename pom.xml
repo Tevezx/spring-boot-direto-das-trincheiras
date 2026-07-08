@@ -21,6 +21,7 @@
 	<!-- fazemos isso para o java reconhecer que o anime service é um project maven -->
 	<modules>
 		<module>anime-service</module>
+		<module>user-service</module>
 	</modules>
 
 </project>
