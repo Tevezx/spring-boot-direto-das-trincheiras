@@ -7,6 +7,9 @@ import academy.devdojo.repository.UserData;
 import academy.devdojo.repository.UserRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 @WebMvcTest(controllers = UserController.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -194,11 +198,14 @@ class UserControllerTest {
     }
 
     // Testando o beanValidation para verificar se os campos estao nulos ou nao
-    @Test
+    @ParameterizedTest
+    // Todas as vezes que eu executar esse teste, ele chama esse metodo
+    @MethodSource("postUserBadRequestSource")
     @DisplayName("POST v1/users returns bad request when fields are empty")
     @Order(11)
-    void save_ReturnsBadRequest_WhenFieldsAreEmpty() throws Exception {
-        var request = fileUtils.readResourceFile("user/post-request-user-empty-fields-400.json");
+    // Passo um fileName (no caso meu request) e uma lista de erros
+    void save_ReturnsBadRequest_WhenFieldsAreEmpty(String fileName, List<String> errors) throws Exception {
+        var request = fileUtils.readResourceFile("user/%s".formatted(fileName));
 
         var mvcResult = mockMvc.perform(MockMvcRequestBuilders.post(URL)
                         .content(request)
@@ -213,40 +220,97 @@ class UserControllerTest {
         // Verifico se realemente há excecoes dentro
         Assertions.assertThat(resolvedException).isNotNull();
 
-        // Defino as mensagens de erros
-        var firstNameError = "The field 'firstName' is required";
-        var lastNameError = "The field 'lastName' is required";
-        var emailError = "The field 'email' is required";
-
         // Verifico se o meu resolvedException contem as minhas mensagens de erros definidas no bean validation
-        Assertions.assertThat(resolvedException.getMessage()).contains(firstNameError, lastNameError, emailError);
+        Assertions.assertThat(resolvedException.getMessage()).contains(errors);
     }
 
-    @Test
-    @DisplayName("POST v1/users returns bad request when fields are blank")
+    @ParameterizedTest
+    @MethodSource("putBadRequestSource")
+    @DisplayName("PUT v1/users returns bad request when field are empty")
     @Order(12)
-    void save_ReturnsBadRequest_WhenFieldsAreBlank() throws Exception {
-        var request = fileUtils.readResourceFile("user/post-request-user-blank-fields-400.json");
+    void update_ReturnsBadRequest_WhenFieldsAreEmpty(String fileName, List<String> errors) throws Exception {
+        BDDMockito.when(userData.getUserList()).thenReturn(userList);
+        var request = fileUtils.readResourceFile("user/%s".formatted(fileName));
 
-        var mvcResult = mockMvc.perform(MockMvcRequestBuilders.post(URL)
+        var mvcResult = mockMvc.perform(MockMvcRequestBuilders.put(URL)
                         .content(request)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                )
-                .andDo(MockMvcResultHandlers.print())
+                ).andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andReturn();
 
-        // Pego o retorno do meu mvc e qual foi a excecao resolvida dele
         Exception resolvedException = mvcResult.getResolvedException();
-        // Verifico se realemente há excecoes dentro
         Assertions.assertThat(resolvedException).isNotNull();
 
-        // Defino as mensagens de erros
-        var firstNameError = "The field 'firstName' is required";
-        var lastNameError = "The field 'lastName' is required";
-        var emailError = "The field 'email' is required";
-
-        // Verifico se o meu resolvedException contem as minhas mensagens de erros definidas no bean validation
-        Assertions.assertThat(resolvedException.getMessage()).contains(firstNameError, lastNameError, emailError);
+        Assertions.assertThat(resolvedException.getMessage()).contains(errors);
     }
+
+    // No metodo, nos dizemos que vamos retornar dois streams arguments
+    // O retorno é justamente o que queremos testar, toda vez que o test 11 ser executado ira chamar esses dois argumentos para testar
+    // Dessa forma, eu nao preciso fazer varios testes repetindo codigo
+    private static Stream<Arguments> postUserBadRequestSource() {
+        return Stream.of(
+                Arguments.of("post-request-user-empty-fields-400.json", allRequiredErrors()),
+                Arguments.of("post-request-user-blank-fields-400.json", allRequiredErrors()),
+                Arguments.of("post-request-user-email-invalid-field-400.json", errorEmailInvalid())
+        );
+    }
+
+    // Cada metodo tem sua responsabilidade, por isso nao acoplei esse codigo em um metodo apenas para o put e post
+    private static Stream<Arguments> putBadRequestSource() {
+        return Stream.of(
+                Arguments.of("put-request-user-empty-field-400.json", allRequiredErrors()),
+                Arguments.of("put-request-user-blank-field-400.json", allRequiredErrors()),
+                Arguments.of("put-request-user-email-invalid-400.json", errorEmailInvalid()),
+                Arguments.of("put-request-user-id-null-field-400.json", errorIdCannotNull())
+        );
+    }
+
+    private static List<String> allRequiredErrors() {
+        var firstNameRequiredError = "The field 'firstName' is required";
+        var lastNameRequiredError = "The field 'lastName' is required";
+        var emailRequiredError = "The field 'email' is required";
+
+        return List.of(firstNameRequiredError, lastNameRequiredError, emailRequiredError);
+    }
+
+    private static List<String> errorEmailInvalid() {
+        var emailInvalidError = "e-mail is not valid";
+        return List.of(emailInvalidError);
+    }
+
+    private static List<String> errorIdCannotNull() {
+        var idCannotNullError = "The field 'id' cannot be null";
+        return List.of(idCannotNullError);
+    }
+
+//    @Test
+//    @DisplayName("POST v1/users returns bad request when fields are blank")
+//    @Order(12)
+//    void save_ReturnsBadRequest_WhenFieldsAreBlank() throws Exception {
+//        var request = fileUtils.readResourceFile("user/post-request-user-blank-fields-400.json");
+//
+//        var mvcResult = mockMvc.perform(MockMvcRequestBuilders.post(URL)
+//                        .content(request)
+//                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+//                )
+//                .andDo(MockMvcResultHandlers.print())
+//                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+//                .andReturn();
+//
+//        // Pego o retorno do meu mvc e qual foi a excecao resolvida dele
+//        Exception resolvedException = mvcResult.getResolvedException();
+//        // Verifico se realemente há excecoes dentro
+//        Assertions.assertThat(resolvedException).isNotNull();
+//
+//        // Defino as mensagens de erros
+//        var firstNameError = "The field 'firstName' is required";
+//        var lastNameError = "The field 'lastName' is required";
+//        var emailError = "The field 'email' is required";
+//
+//        // Verifico se o meu resolvedException contem as minhas mensagens de erros definidas no bean validation
+//        Assertions.assertThat(resolvedException.getMessage()).contains(firstNameError, lastNameError, emailError);
+//    }
+
+
 }
