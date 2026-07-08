@@ -5,6 +5,7 @@ import academy.devdojo.commons.UserUtils;
 import academy.devdojo.domain.User;
 import academy.devdojo.repository.UserData;
 import academy.devdojo.repository.UserRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
@@ -190,5 +191,62 @@ class UserControllerTest {
                 ).andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andExpect(MockMvcResultMatchers.status().reason("User not Found"));
+    }
+
+    // Testando o beanValidation para verificar se os campos estao nulos ou nao
+    @Test
+    @DisplayName("POST v1/users returns bad request when fields are empty")
+    @Order(11)
+    void save_ReturnsBadRequest_WhenFieldsAreEmpty() throws Exception {
+        var request = fileUtils.readResourceFile("user/post-request-user-empty-fields-400.json");
+
+        var mvcResult = mockMvc.perform(MockMvcRequestBuilders.post(URL)
+                        .content(request)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andReturn();
+
+        // Pego o retorno do meu mvc e qual foi a excecao resolvida dele
+        Exception resolvedException = mvcResult.getResolvedException();
+        // Verifico se realemente há excecoes dentro
+        Assertions.assertThat(resolvedException).isNotNull();
+
+        // Defino as mensagens de erros
+        var firstNameError = "The field 'firstName' is required";
+        var lastNameError = "The field 'lastName' is required";
+        var emailError = "The field 'email' is required";
+
+        // Verifico se o meu resolvedException contem as minhas mensagens de erros definidas no bean validation
+        Assertions.assertThat(resolvedException.getMessage()).contains(firstNameError, lastNameError, emailError);
+    }
+
+    @Test
+    @DisplayName("POST v1/users returns bad request when fields are blank")
+    @Order(12)
+    void save_ReturnsBadRequest_WhenFieldsAreBlank() throws Exception {
+        var request = fileUtils.readResourceFile("user/post-request-user-blank-fields-400.json");
+
+        var mvcResult = mockMvc.perform(MockMvcRequestBuilders.post(URL)
+                        .content(request)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andReturn();
+
+        // Pego o retorno do meu mvc e qual foi a excecao resolvida dele
+        Exception resolvedException = mvcResult.getResolvedException();
+        // Verifico se realemente há excecoes dentro
+        Assertions.assertThat(resolvedException).isNotNull();
+
+        // Defino as mensagens de erros
+        var firstNameError = "The field 'firstName' is required";
+        var lastNameError = "The field 'lastName' is required";
+        var emailError = "The field 'email' is required";
+
+        // Verifico se o meu resolvedException contem as minhas mensagens de erros definidas no bean validation
+        Assertions.assertThat(resolvedException.getMessage()).contains(firstNameError, lastNameError, emailError);
     }
 }
