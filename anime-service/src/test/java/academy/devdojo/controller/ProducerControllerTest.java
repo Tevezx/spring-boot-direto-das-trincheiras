@@ -12,7 +12,11 @@ import academy.devdojo.comons.ProducerUtils;
 import academy.devdojo.domain.Producer;
 import academy.devdojo.repository.ProducerData;
 import academy.devdojo.repository.ProducerHardCodedRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +34,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 // Meio termo entre teste unitario e teste de integracao (slices test)
 // Interessante utilizar quando voce quer que seja testes mais rapidos para testar o controller
@@ -240,5 +245,78 @@ class ProducerControllerTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andExpect(MockMvcResultMatchers.status().reason("Producer not Found"));
+    }
+
+    @ParameterizedTest
+    @MethodSource("postUserBadRequestSource")
+    @DisplayName("POST v1/producers returns bad request when fields are empty")
+    @Order(11)
+    void save_ReturnsBadRequest_WhenFieldsAreEmpty(String fileName, List<String> errors) throws Exception {
+        var request = fileUtils.readResourceFile("producer/%s".formatted(fileName));
+
+        var mvcResult = mockMvc.perform(MockMvcRequestBuilders
+                        .post(URL)
+                        // O meu conteudo (requestBody) é minha requisicao
+                        .content(request)
+                        // No meu controller eu estou passando um header, entao preciso coloca-lo aqui (o value é apenas para testes)
+                        .header("x-api-key", "v1")
+                        // O tipo de conteudo recebido é um json
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andReturn();
+
+        Exception resolvedException = mvcResult.getResolvedException();
+        Assertions.assertThat(resolvedException).isNotNull();
+
+        Assertions.assertThat(resolvedException.getMessage()).contains(errors);
+    }
+
+    @ParameterizedTest
+    @MethodSource("putUserBadRequestSource")
+    @DisplayName("PUT v1/producers returns bad request when fields are empty")
+    @Order(12)
+    void update_ReturnsBadRequest_WhenFieldsAreEmpty(String fileName, List<String> errors) throws Exception {
+        var request = fileUtils.readResourceFile("producer/%s".formatted(fileName));
+
+        var mvcResult = mockMvc.perform(MockMvcRequestBuilders
+                        .put(URL)
+                        .content(request)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andReturn();
+
+        Exception resolvedException = mvcResult.getResolvedException();
+        Assertions.assertThat(resolvedException).isNotNull();
+
+        Assertions.assertThat(resolvedException.getMessage()).contains(errors);
+    }
+
+    private static Stream<Arguments> postUserBadRequestSource() {
+        return Stream.of(
+                Arguments.of("post-request-producer-empty-field-400.json", allRequiredErrors()),
+                Arguments.of("post-request-producer-blank-field-400.json", allRequiredErrors())
+        );
+    }
+
+    private static Stream<Arguments> putUserBadRequestSource() {
+        return Stream.of(
+                Arguments.of("put-request-producer-empty-field-400.json", allRequiredErrors()),
+                Arguments.of("put-request-producer-blank-field-400.json", allRequiredErrors()),
+                Arguments.of("put-request-producer-id-null-400.json", errorIdCannotNull())
+        );
+    }
+
+    private static List<String> allRequiredErrors() {
+        var nameRequiredError = "The field 'name' is required";
+        return List.of(nameRequiredError);
+    }
+
+    private static List<String> errorIdCannotNull() {
+        var idCannotNullError = "The field 'id' cannot be null";
+        return List.of(idCannotNullError);
     }
 }

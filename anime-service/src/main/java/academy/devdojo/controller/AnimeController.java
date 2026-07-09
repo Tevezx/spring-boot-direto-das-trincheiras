@@ -6,6 +6,7 @@ import academy.devdojo.request.AnimePutRequest;
 import academy.devdojo.response.AnimeGetResponse;
 import academy.devdojo.response.AnimePostResponse;
 import academy.devdojo.service.AnimeService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -57,7 +58,7 @@ public class AnimeController {
     // Idempotente -> Só pode ser executado uma vez
     // O post nao é idempotente
     @PostMapping()
-    public ResponseEntity<AnimePostResponse> save(@RequestBody AnimePostRequest animePostRequest) {
+    public ResponseEntity<AnimePostResponse> save(@RequestBody @Valid AnimePostRequest animePostRequest) {
         log.debug("Request to save anime: {}", animePostRequest.getName());
 
         var anime = mapper.toAnimePostRequest(animePostRequest);
@@ -78,7 +79,7 @@ public class AnimeController {
     }
 
     @PutMapping()
-    public ResponseEntity<Void> update(@RequestBody AnimePutRequest animePutRequest) {
+    public ResponseEntity<Void> update(@RequestBody @Valid AnimePutRequest animePutRequest) {
         log.debug("Request to updated anime: {}", animePutRequest.getName());
 
         var anime = mapper.toAnimePutRequest(animePutRequest);

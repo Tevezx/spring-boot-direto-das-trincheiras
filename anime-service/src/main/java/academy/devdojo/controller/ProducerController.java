@@ -6,6 +6,7 @@ import academy.devdojo.request.ProducerPutRequest;
 import academy.devdojo.response.ProducerGetResponse;
 import academy.devdojo.response.ProducerPostResponse;
 import academy.devdojo.service.ProducerService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -58,7 +59,7 @@ public class ProducerController {
     // headers -> normalmente significa a chave da api que estamos criando, ele so mapeia a requisicao se esse header for encontrado (api-key)
     // @RequestHeader -> Consigo visualizar os headers que estão vindo da requisicao
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, headers = "x-api-key")
-    public ResponseEntity<ProducerPostResponse> save(@RequestBody ProducerPostRequest producerPostRequest, @RequestHeader HttpHeaders headers) {
+    public ResponseEntity<ProducerPostResponse> save(@RequestBody @Valid ProducerPostRequest producerPostRequest, @RequestHeader HttpHeaders headers) {
         log.info("{}", headers);
 
         var producer = mapper.toProducerPostRequest(producerPostRequest);
@@ -92,7 +93,7 @@ public class ProducerController {
     }
 
     @PutMapping()
-    public ResponseEntity<Void> update(@RequestBody ProducerPutRequest producerPutRequest) {
+    public ResponseEntity<Void> update(@RequestBody @Valid ProducerPutRequest producerPutRequest) {
         log.debug("Request to updated producer: {}", producerPutRequest.getName());
 
         var producer = mapper.toProducerUpdated(producerPutRequest);
