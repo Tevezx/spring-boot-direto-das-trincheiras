@@ -1,5 +1,7 @@
 package academy.devdojo.controller;
 
+import academy.devdojo.exception.DefaultErrorMessage;
+import academy.devdojo.exception.NotFoundException;
 import academy.devdojo.mapper.AnimeMapper;
 import academy.devdojo.request.AnimePostRequest;
 import academy.devdojo.request.AnimePutRequest;
@@ -9,6 +11,7 @@ import academy.devdojo.service.AnimeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

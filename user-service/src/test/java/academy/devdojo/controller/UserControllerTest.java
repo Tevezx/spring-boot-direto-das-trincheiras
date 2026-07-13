@@ -109,17 +109,18 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("GET v1/users/90 returns throw ResponseStatusException when id not exists")
+    @DisplayName("GET v1/users/90 returns throw ThrowNotFound when id not exists")
     @Order(5)
-    void findById_ReturnsThrowResponseStatusException_WhenIdNotExists() throws Exception {
+    void findById_ReturnsThrowNotFound_WhenIdNotExists() throws Exception {
         BDDMockito.when(userData.getUserList()).thenReturn(userList);
+        var response = fileUtils.readResourceFile("user/get-find-by-id-404.json");
 
         var id = 90L;
 
         mockMvc.perform(MockMvcRequestBuilders.get(URL + "/{id}", id))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
-                .andExpect(MockMvcResultMatchers.status().reason("User not Found"));
+                .andExpect(MockMvcResultMatchers.content().json(response));
     }
 
     @Test
@@ -157,15 +158,16 @@ class UserControllerTest {
     @Test
     @DisplayName("DELETE v1/users/90 delete user by id when id not exists")
     @Order(8)
-    void deleteById_ReturnsThrowResponseStatusException_WhenIdNotExists() throws Exception {
+    void deleteById_ReturnsThrowNotFound_WhenIdNotExists() throws Exception {
         BDDMockito.when(userData.getUserList()).thenReturn(userList);
+        var response = fileUtils.readResourceFile("user/delete-by-id-404.json");
 
         var id = 90L;
 
         mockMvc.perform(MockMvcRequestBuilders.delete(URL + "/{id}", id))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
-                .andExpect(MockMvcResultMatchers.status().reason("User not Found"));
+                .andExpect(MockMvcResultMatchers.content().json(response));
     }
 
     @Test
@@ -188,13 +190,14 @@ class UserControllerTest {
     void update_UpdateUser_WhenIdNotExists() throws Exception {
         BDDMockito.when(userData.getUserList()).thenReturn(userList);
         var request = fileUtils.readResourceFile("user/put-request-throw-user-200.json");
+        var response = fileUtils.readResourceFile("user/put-response-user-404.json");
 
         mockMvc.perform(MockMvcRequestBuilders.put(URL)
                         .content(request)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                 ).andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
-                .andExpect(MockMvcResultMatchers.status().reason("User not Found"));
+                .andExpect(MockMvcResultMatchers.content().json(response));
     }
 
     // Testando o beanValidation para verificar se os campos estao nulos ou nao

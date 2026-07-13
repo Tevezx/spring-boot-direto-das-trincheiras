@@ -1,6 +1,7 @@
 package academy.devdojo.service;
 
 import academy.devdojo.domain.Producer;
+import academy.devdojo.exception.NotFoundException;
 import academy.devdojo.repository.ProducerHardCodedRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,7 +34,7 @@ public class ProducerService {
     // Retorno o id com base no repository do metodo, porem com a regra de se nao achar retornar uma exception
     public Producer findByIdOrThrowNotFound(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Producer not Found"));
+                .orElseThrow(() -> new NotFoundException("Producer not Found"));
     }
 
     public Producer save(Producer producer) {

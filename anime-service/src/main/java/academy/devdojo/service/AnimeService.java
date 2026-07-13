@@ -1,11 +1,10 @@
 package academy.devdojo.service;
 
 import academy.devdojo.domain.Anime;
+import academy.devdojo.exception.NotFoundException;
 import academy.devdojo.repository.AnimeHardCodedRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -23,7 +22,7 @@ public class AnimeService {
     }
 
     public Anime findByIdOrThrowNotFound(Long id) {
-        return repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Anime not Found"));
+        return repository.findById(id).orElseThrow(() -> new NotFoundException("Anime not Found"));
     }
 
     public Anime save(Anime anime) {

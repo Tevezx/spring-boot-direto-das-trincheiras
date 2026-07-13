@@ -1,0 +1,20 @@
+services:
+  # Nome do meu servico
+  mysql:
+    # Qual a imagem que sera utilizada
+    image: mysql:9.0.1
+    # Definindo as variaveis de ambiente
+    environment:
+      MYSQL_ROOT_PASSWORD: ${ENV_ROOT_PASSWORD}
+      MYSQL_USER: ${ENV_USER}
+      MYSQL_PASSWORD: ${ENV_PASSWORD}
+    # Definindo a porta de entrada e saida dos dados
+    ports:
+      - "3306:3306"
+    # Definindo um volume, pois nao quero perder os dados, apenas se eu deletar o container
+    volumes:
+      - devdojo-db:/var/lib/sql
+
+# Por padrão o docker ja tem uma pasta onde ele salva os dados na minha maquina
+volumes:
+  devdojo-db:
