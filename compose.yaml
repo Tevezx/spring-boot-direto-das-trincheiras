@@ -6,8 +6,8 @@ services:
     # Definindo as variaveis de ambiente
     environment:
       MYSQL_ROOT_PASSWORD: ${ENV_ROOT_PASSWORD}
-      MYSQL_USER: ${ENV_USER}
-      MYSQL_PASSWORD: ${ENV_PASSWORD}
+      MYSQL_USER: ${ENV_MYSQL_USER}
+      MYSQL_PASSWORD: ${ENV_MYSQL_PASSWORD}
     # Definindo a porta de entrada e saida dos dados
     ports:
       - "3306:3306"

@@ -1,9 +1,20 @@
 spring:
+  config:
+    import: optional:classpath:.env[.properties]
   application:
     name: user-service
   web:
     error:
       include-stacktrace: NEVER
+  # Configurando a conexao com o banco de dados
+  datasource:
+    # Criando a conexao com o banco de dados, definindo o timezone para ecitar problemas e criando banco se ele nao existir
+    url: jdbc:mysql://localhost:3306/user_service?useTimezone=true&serverTimezone=UTC&createDatabaseIfNotExist=true
+    username: ${ENV_ROOT_USER}
+    password: ${ENV_ROOT_PASSWORD}
+  jpa:
+    # Mostra todas as querys da funcao
+    show-sql: true
   threads:
     virtual:
       enabled: true
