@@ -13,8 +13,11 @@ spring:
     username: ${ENV_ROOT_USER}
     password: ${ENV_ROOT_PASSWORD}
   jpa:
-    # Mostra todas as querys da funcao
+    # Mostra todas as querys da funcao no meu terminal
     show-sql: true
+    # Consigo rodar a aplicacao e criar as tabelas automaticamente no banco de dados (nao utilizado em producao)
+    hibernate:
+      ddl-auto: update
   threads:
     virtual:
       enabled: true
