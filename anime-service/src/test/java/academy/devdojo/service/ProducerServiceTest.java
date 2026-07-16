@@ -2,7 +2,8 @@ package academy.devdojo.service;
 
 import academy.devdojo.comons.ProducerUtils;
 import academy.devdojo.domain.Producer;
-import academy.devdojo.repository.ProducerHardCodedRepository;
+import academy.devdojo.exception.NotFoundException;
+import academy.devdojo.repository.ProducerRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,7 +12,6 @@ import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ class ProducerServiceTest {
     private ProducerService service;
 
     @Mock
-    private ProducerHardCodedRepository repository;
+    private ProducerRepository repository;
     private List<Producer> producerList = new ArrayList<>();
 
     @InjectMocks
@@ -52,13 +52,13 @@ class ProducerServiceTest {
     @DisplayName("FindAll returns to list with found object when argument exists")
     @Order(2)
     void findAll_ReturnsFindByName_WhenNameExists() {
-        Producer producerFindByName = producerList.getFirst();
+        var producerFindByName = producerList.getFirst();
         List<Producer> expected = producerList
                 .stream()
                 .filter(producer -> producer.getName().equalsIgnoreCase(producerFindByName.getName()))
                 .toList();
 
-        BDDMockito.when(repository.findByName(producerFindByName.getName())).thenReturn(expected);
+        BDDMockito.when(repository.findByNameIgnoreCase(producerFindByName.getName())).thenReturn(expected);
 
         var producers = service.findAll(producerFindByName.getName());
 
@@ -70,7 +70,7 @@ class ProducerServiceTest {
     @Order(3)
     void findByName_ReturnsEmptyList_WhenNameIsNotFound() {
         // Quando eu passar not-found, quero que ele retorne uma lista vazia
-        BDDMockito.when(repository.findByName("not-found")).thenReturn(Collections.emptyList());
+        BDDMockito.when(repository.findByNameIgnoreCase("not-found")).thenReturn(Collections.emptyList());
 
         var producers = service.findAll("not-found");
         Assertions.assertThat(producers).isNotNull().isEmpty();
@@ -91,17 +91,17 @@ class ProducerServiceTest {
     }
 
     @Test
-    @DisplayName("FindById throws ResponseStatusException when producer is not found")
+    @DisplayName("FindById throws NotFoundException when producer is not found")
     @Order(5)
-    void findById_ThrowsResponseStatusException_WhenProducerIsNotFound() {
+    void findById_ThrowsNotFoundException_WhenProducerIsNotFound() {
         var producerExpected = producerList.getFirst();
         // Se ele nao existe, retorna um Optional vazio
         BDDMockito.when(repository.findById(producerExpected.getId())).thenReturn(Optional.empty());
 
-        // Verificando se ele retorna exatamente uma excecao da classe ResponseStatusException
+        // Verificando se ele retorna exatamente uma excecao da classe NotFoundException
         Assertions.assertThatException()
                 .isThrownBy(() -> service.findByIdOrThrowNotFound(producerExpected.getId()))
-                .isInstanceOf(ResponseStatusException.class);
+                .isInstanceOf(NotFoundException.class);
     }
 
     @Test
@@ -134,15 +134,15 @@ class ProducerServiceTest {
     }
 
     @Test
-    @DisplayName("Delete throws ResponseStatusException when producer is not found")
+    @DisplayName("Delete throws NotFoundException when producer is not found")
     @Order(8)
-    void deleteById_ThrowsResponseStatusException_WhenProducerIsNotFound() {
+    void deleteById_ThrowsNotFoundException_WhenProducerIsNotFound() {
         var producerToDelete = producerList.getFirst();
         BDDMockito.when(repository.findById(producerToDelete.getId())).thenReturn(Optional.empty());
 
         // Verificando se a excecao devida do meu metodo deletebyid esta retornando corretamente caso eu passe um parametro vazio
         Assertions.assertThatException().isThrownBy(() -> service.deleteById(producerToDelete.getId()))
-                .isInstanceOf(ResponseStatusException.class);
+                .isInstanceOf(NotFoundException.class);
     }
 
     @Test
@@ -159,14 +159,14 @@ class ProducerServiceTest {
     }
 
     @Test
-    @DisplayName("Update throws ResponseStatusException when producer is not found")
+    @DisplayName("Update throws NotFoundException when producer is not found")
     @Order(10)
-    void update_ThrowsResponseStatusException_WhenProducerIsNotFound() {
+    void update_ThrowsNotFoundException_WhenProducerIsNotFound() {
         var producerToUpdate = producerList.getFirst();
         // Independente do que voce passar para o repository.findById, retorne vazio
         BDDMockito.when(repository.findById(ArgumentMatchers.anyLong())).thenReturn(Optional.empty());
 
         Assertions.assertThatException().isThrownBy(() -> service.update(producerToUpdate))
-                .isInstanceOf(ResponseStatusException.class);
+                .isInstanceOf(NotFoundException.class);
     }
 }

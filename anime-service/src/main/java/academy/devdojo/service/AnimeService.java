@@ -2,23 +2,19 @@ package academy.devdojo.service;
 
 import academy.devdojo.domain.Anime;
 import academy.devdojo.exception.NotFoundException;
-import academy.devdojo.repository.AnimeHardCodedRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import academy.devdojo.repository.AnimeRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class AnimeService {
-    private final AnimeHardCodedRepository repository;
-
-    @Autowired
-    public AnimeService(AnimeHardCodedRepository repository) {
-        this.repository = repository;
-    }
+    private final AnimeRepository repository;
 
     public List<Anime> listAll(String name) {
-        return name != null ? repository.listAllAnimeName(name) : repository.listAll();
+        return name != null ? repository.findByNameIgnoreCase(name) : repository.findAll();
     }
 
     public Anime findByIdOrThrowNotFound(Long id) {
@@ -30,12 +26,12 @@ public class AnimeService {
     }
 
     public void deleteById(Long id) {
-        Anime animeDeleted = findByIdOrThrowNotFound(id);
+        var animeDeleted = findByIdOrThrowNotFound(id);
         repository.deleteById(animeDeleted.getId());
     }
 
     public void update(Anime anime) {
         findByIdOrThrowNotFound(anime.getId());
-        repository.update(anime);
+        repository.save(anime);
     }
 }

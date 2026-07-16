@@ -2,11 +2,9 @@ package academy.devdojo.service;
 
 import academy.devdojo.domain.Producer;
 import academy.devdojo.exception.NotFoundException;
-import academy.devdojo.repository.ProducerHardCodedRepository;
+import academy.devdojo.repository.ProducerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -18,17 +16,17 @@ import java.util.List;
 @Service
 public class ProducerService {
     // Preciso de um repository
-    private final ProducerHardCodedRepository repository;
+    private final ProducerRepository repository;
 
     // Todas as vezes que eu criar um ProducerService automaticamente vou criar um repository
     @Autowired // -> siginifica que se eu chamar o ProducerService, automaticamente eu crio o repository
-    public ProducerService(ProducerHardCodedRepository repository) {
+    public ProducerService(ProducerRepository repository) {
         this.repository = repository;
     }
 
     // Uma lógica de negocio, se o name for null eu retorno tudo, se nao, eu retorno a busca do nome em especifico
     public List<Producer> findAll(String name) {
-        return name == null ? repository.findAll() : repository.findByName(name);
+        return name == null ? repository.findAll() : repository.findByNameIgnoreCase(name);
     }
 
     // Retorno o id com base no repository do metodo, porem com a regra de se nao achar retornar uma exception
@@ -51,9 +49,12 @@ public class ProducerService {
     // Acho o producer que desejo atualizar
     // Atualizo com o metodo criado no repository
     public void update(Producer producer) {
-        Producer producerToUpdated = findByIdOrThrowNotFound(producer.getId());
-        producer.setCreatedAt(producerToUpdated.getCreatedAt());
-        repository.update(producer);
+        assertProducerExists(producer.getId());
+        repository.save(producer);
+    }
+
+    public void assertProducerExists(Long id) {
+        findByIdOrThrowNotFound(id);
     }
 
 }

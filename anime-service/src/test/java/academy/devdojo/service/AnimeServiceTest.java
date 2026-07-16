@@ -3,6 +3,7 @@ package academy.devdojo.service;
 import academy.devdojo.comons.AnimeUtils;
 import academy.devdojo.domain.Anime;
 import academy.devdojo.repository.AnimeHardCodedRepository;
+import academy.devdojo.repository.AnimeRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,7 +11,7 @@ import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.server.ResponseStatusException;
+import academy.devdojo.exception.NotFoundException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,7 +25,7 @@ class AnimeServiceTest {
     private AnimeService service;
 
     @Mock
-    private AnimeHardCodedRepository repository;
+    private AnimeRepository repository;
     private List<Anime> animeList = new ArrayList<>();
 
     @InjectMocks
@@ -39,7 +40,7 @@ class AnimeServiceTest {
     @DisplayName("FindAll returns to list with all anime when argument is null")
     @Order(1)
     void listAll_ReturnsAllAnimes_WhenNameIsNull() {
-        BDDMockito.when(repository.listAll()).thenReturn(animeList);
+        BDDMockito.when(repository.findAll()).thenReturn(animeList);
         var animes = service.listAll(null);
 
         // O que retornar de animes nao pode ser null e tem que ser igual a minha lista de animes
@@ -56,7 +57,7 @@ class AnimeServiceTest {
                 .filter(anime1 -> anime1.getName().equalsIgnoreCase(anime.getName()))
                 .toList();
 
-        BDDMockito.when(repository.listAllAnimeName(anime.getName())).thenReturn(animeExpected);
+        BDDMockito.when(repository.findByNameIgnoreCase(anime.getName())).thenReturn(animeExpected);
 
         List<Anime> animeResponse = service.listAll(anime.getName());
         Assertions.assertThat(animeResponse).isNotNull().isNotEmpty().containsExactlyElementsOf(animeExpected);
@@ -66,7 +67,7 @@ class AnimeServiceTest {
     @DisplayName("FindAll returns empty list when name is not found")
     @Order(3)
     void findAll_ReturnsEmptyList_WhenNameIsNotFound() {
-        BDDMockito.when(repository.listAllAnimeName("not-found")).thenReturn(Collections.emptyList());
+        BDDMockito.when(repository.findByNameIgnoreCase("not-found")).thenReturn(Collections.emptyList());
         List<Anime> anime = service.listAll("not-found");
 
         Assertions.assertThat(anime).isNotNull().isEmpty();
@@ -85,15 +86,15 @@ class AnimeServiceTest {
     }
 
     @Test
-    @DisplayName("FindById throws ResponseStatusException when anime is not found")
+    @DisplayName("FindById throws NotFoundException when anime is not found")
     @Order(5)
-    void findByIdOrThrowNotFound_ThrowsResponseStatusException_WhenIdNotFound() {
+    void findByIdOrThrowNotFound_ThrowsNotFoundException_WhenIdNotFound() {
         var anime = animeList.getFirst();
         BDDMockito.when(repository.findById(anime.getId())).thenReturn(Optional.empty());
 
         Assertions.assertThatException()
                 .isThrownBy(() -> service.findByIdOrThrowNotFound(anime.getId()))
-                .isInstanceOf(ResponseStatusException.class);
+                .isInstanceOf(NotFoundException.class);
     }
 
     @Test
@@ -119,15 +120,15 @@ class AnimeServiceTest {
     }
 
     @Test
-    @DisplayName("Delete throws ResponseStatusException when anime is not found")
+    @DisplayName("Delete throws NotFoundException when anime is not found")
     @Order(8)
-    void deleteById_ResponseStatusException_WhenAnimeIsNotFound() {
+    void deleteById_ThrowsNotFoundException_WhenAnimeIsNotFound() {
         var anime = animeList.getFirst();
         BDDMockito.when(repository.findById(anime.getId())).thenReturn(Optional.empty());
 
         Assertions.assertThatException()
                 .isThrownBy(() -> service.deleteById(anime.getId()))
-                .isInstanceOf(ResponseStatusException.class);
+                .isInstanceOf(NotFoundException.class);
     }
 
     @Test
@@ -142,14 +143,14 @@ class AnimeServiceTest {
     }
 
     @Test
-    @DisplayName("Update throws ResponseStatusException when anime is not found")
+    @DisplayName("Update throws NotFoundException when anime is not found")
     @Order(10)
-    void update_ResponseStatusException_WhenAnimeNotFound() {
+    void update_ThrowsNotFoundException_WhenAnimeNotFound() {
         var anime = animeList.getFirst();
         BDDMockito.when(repository.findById(anime.getId())).thenReturn(Optional.empty());
 
         Assertions.assertThatException()
                 .isThrownBy(() -> service.update(anime))
-                .isInstanceOf(ResponseStatusException.class);
+                .isInstanceOf(NotFoundException.class);
     }
 }

@@ -3,12 +3,21 @@ spring:
   #  profiles:
   #    active:
   #      - mongo
+  config:
+    import: optional:classpath:.env[.properties]
   application:
     name: anime-service
   web:
     error:
       include-stacktrace: NEVER # Dessa forma, no postman nao aparece o stack trace
-
+  datasource:
+    url: jdbc:mysql://localhost:3306/anime_service?useTimezone=true&serverTimezone=UTC&createDatabaseIfNotExists=true
+    username: ${ENV_ROOT_USER}
+    password: ${ENV_ROOT_PASSWORD}
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
   # Habilitando a opcao de utilizar as threads virtuais
   threads:
     virtual:
