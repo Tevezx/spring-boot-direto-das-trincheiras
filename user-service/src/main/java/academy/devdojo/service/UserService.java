@@ -23,9 +23,19 @@ public class UserService {
         return repository.findById(id).orElseThrow(() -> new NotFoundException("User not Found"));
     }
 
+    // Transactional serve para que se caso algo acontecer no meu metodo, um rolback é executado e para tudo aquilo que estava sendo feito antes
+    // @Transactional()
     public User save(User user) {
         assertEmailDoesNotExists(user.getEmail());
         return repository.save(user);
+
+//        if (true) {
+//               Ponto negativo do transactional:
+//               Fazendo chamada para API do SERASA - demora 1 minuto
+//               O transactional espera 1m e faz o banco ficar parado durante 1 minuto
+//               Em uma aplicação grande com varios usuarios acessando, seria uns 2000 minutos
+//            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error");
+//        }
     }
 
     public void deleteById(Long id) {

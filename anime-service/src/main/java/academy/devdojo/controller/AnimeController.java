@@ -1,7 +1,5 @@
 package academy.devdojo.controller;
 
-import academy.devdojo.exception.DefaultErrorMessage;
-import academy.devdojo.exception.NotFoundException;
 import academy.devdojo.mapper.AnimeMapper;
 import academy.devdojo.request.AnimePostRequest;
 import academy.devdojo.request.AnimePutRequest;
@@ -11,7 +9,8 @@ import academy.devdojo.service.AnimeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,7 +37,7 @@ public class AnimeController {
 
     // Error 500 -> erro no codigo, algo que o desenvolvedor deixou passar
     // required false -> quebrando funcionalidades existentes para quem esta consumindo a api
-    @GetMapping("filterName")
+    @GetMapping("/filterName")
     public ResponseEntity<List<AnimeGetResponse>> listAllAnimeName(@RequestParam(required = false) String name) {
         log.debug("List all animes for name: {}", name);
 
@@ -46,6 +45,17 @@ public class AnimeController {
         List<AnimeGetResponse> animeGetResonseList = mapper.toAnimeGetResonseList(animes);
 
         return ResponseEntity.ok().body(animeGetResonseList);
+    }
+
+    // Paginação
+    @GetMapping("/paginated")
+    public ResponseEntity<Page<AnimeGetResponse>> findAll(Pageable pageable) {
+        log.debug("List all animes paginated");
+
+        // Busco o metodo de paginacao no meu service, que retorna uma page de anime
+        // com o .map, tranformo a resposta dele em um animeGetResponse e devolvo uma pagina ao usuario
+        var pageAnimeGetResponse = animeService.findAllPaginated(pageable).map(mapper::toAnimeGetResponse);
+        return ResponseEntity.ok(pageAnimeGetResponse);
     }
 
     @GetMapping("{id}")

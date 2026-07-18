@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@ToString
 public class Producer {
     @Id
     // Ou seja, se tiver o mesmo id são producers iguais

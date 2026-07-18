@@ -2,7 +2,7 @@ package academy.devdojo.service;
 
 import academy.devdojo.comons.AnimeUtils;
 import academy.devdojo.domain.Anime;
-import academy.devdojo.repository.AnimeHardCodedRepository;
+import academy.devdojo.exception.NotFoundException;
 import academy.devdojo.repository.AnimeRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
@@ -11,7 +11,9 @@ import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import academy.devdojo.exception.NotFoundException;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,10 +43,27 @@ class AnimeServiceTest {
     @Order(1)
     void listAll_ReturnsAllAnimes_WhenNameIsNull() {
         BDDMockito.when(repository.findAll()).thenReturn(animeList);
+
         var animes = service.listAll(null);
 
         // O que retornar de animes nao pode ser null e tem que ser igual a minha lista de animes
         Assertions.assertThat(animes).isNotNull().hasSameElementsAs(animeList);
+    }
+
+    // Testando a paginacao
+    @Test
+    @DisplayName("FindAllPaginated returns a paginated list of animes")
+    @Order(1)
+    void listAllPaginated_ReturnsPaginatedAnime_WhenSuccessFul() {
+        var pageRequest = PageRequest.of(0, animeList.size());
+        var pageAnime = new PageImpl<>(animeList, pageRequest, animeList.size());
+
+        BDDMockito.when(repository.findAll(BDDMockito.any(Pageable.class))).thenReturn(pageAnime);
+
+        var animesFound = service.findAllPaginated(pageRequest);
+
+        // O que retornar de animes nao pode ser null e tem que ser igual a minha lista de animes
+        Assertions.assertThat(animesFound).isNotNull().hasSameElementsAs(animeList);
     }
 
     @Test

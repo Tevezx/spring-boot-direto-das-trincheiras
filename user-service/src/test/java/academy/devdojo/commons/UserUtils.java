@@ -14,4 +14,8 @@ public class UserUtils {
 
         return new ArrayList<>(List.of(carlos, ana));
     }
+
+    public User newUserToSave() {
+        return User.builder().firstName("Carlos").lastName("Soares").email("carlos@gmail.com").build();
+    }
 }

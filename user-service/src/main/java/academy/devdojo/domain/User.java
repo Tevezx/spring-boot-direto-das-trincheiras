@@ -10,6 +10,8 @@ import lombok.*;
 @EqualsAndHashCode
 // Estou mostrando que ele é uma entidade do banco de dados
 @Entity
+// "user" é palavra reservada no H2, por isso precisamos renomear a tabela para poder realizar os testes
+@Table(name = "tb_user")
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {

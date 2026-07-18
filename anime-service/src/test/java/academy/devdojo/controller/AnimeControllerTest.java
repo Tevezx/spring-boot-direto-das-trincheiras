@@ -15,6 +15,9 @@ import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -59,6 +62,24 @@ class AnimeControllerTest {
         var response = fileUtils.readResourceFile("anime/get-anime-null-name-200.json");
 
         mockMvc.perform(MockMvcRequestBuilders.get(URL + "/filterName"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json(response));
+    }
+
+    // Testando a paginacao
+    @Test
+    @DisplayName("GET v1/animes/paginated returns a paginated list of animes")
+    @Order(1)
+    void listAllPaginated_ReturnsAllAnimes_WhenSuccessFul() throws Exception {
+        var response = fileUtils.readResourceFile("anime/get-anime-paginated-200.json");
+        var pageRequest = PageRequest.of(0, animeList.size());
+        var pageAnime = new PageImpl<>(animeList, pageRequest, 1);
+
+        // Qualquer coisa passada que seja da classe Pageable.class, retorno o pageAnime
+        BDDMockito.when(repository.findAll(BDDMockito.any(Pageable.class))).thenReturn(pageAnime);
+
+        mockMvc.perform(MockMvcRequestBuilders.get(URL + "/paginated"))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(response));

@@ -10,6 +10,7 @@ import lombok.*;
 @NoArgsConstructor // Definindo um construtor sem argumentos
 @AllArgsConstructor
 @Entity
+@ToString
 public class Anime {
     @Id
     @EqualsAndHashCode.Include
