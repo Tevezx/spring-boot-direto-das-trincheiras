@@ -3,6 +3,7 @@ services:
   mysql:
     # Qual a imagem que sera utilizada
     image: mysql:9.0.1
+    container_name: mysql
     # Definindo as variaveis de ambiente
     environment:
       MYSQL_ROOT_PASSWORD: ${ENV_ROOT_PASSWORD}

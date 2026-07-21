@@ -4,6 +4,7 @@ import academy.devdojo.commons.FileUtils;
 import academy.devdojo.commons.ProfileUtils;
 import academy.devdojo.domain.Profile;
 import academy.devdojo.repository.ProfileRepository;
+import academy.devdojo.repository.UserProfileRepository;
 import academy.devdojo.repository.UserRespository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
@@ -37,6 +38,8 @@ class ProfileControllerTest {
     private ProfileRepository repository;
     @MockitoBean
     private UserRespository userRespository;
+    @MockitoBean
+    private UserProfileRepository userProfileRepository;
     @Autowired
     private FileUtils fileUtils;
     @Autowired

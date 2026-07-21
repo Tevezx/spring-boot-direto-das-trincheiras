@@ -108,6 +108,13 @@
             <artifactId>h2</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- Utilizando essa dependencia para adquirir mais informacoes sobre as querys do banco de dados -->
+        <dependency>
+            <groupId>com.github.gavlyukovskiy</groupId>
+            <artifactId>datasource-proxy-spring-boot-starter</artifactId>
+            <version>1.9.2</version>
+        </dependency>
     </dependencies>
 
     <build>

@@ -25,6 +25,20 @@ spring:
 logging:
   level:
     academy.devdojo: debug
+    # Mostra quais são os parametros utilizados nas querys do banco de dados ao fazer uma chamada no postman
+    # Não é utilizado em produção
+    # org.hibernate.orm.jdbc.bind: trace
+#    net.ttddyy.dsproxy.listener.logging.SLF4JQueryLoggingListener: debug
+#    net.ttddyy.dsproxy.listener.logging.SLF4JSlowQueryListener: warn
+#decorator:
+#  datasource:
+#    datasource-proxy:
+#      query:
+#        enable-logging: true
+#        log-level: debug
+#      slow-query:
+#        enable-logging: true
+#        log-level: warn
 
 server:
   servlet:
