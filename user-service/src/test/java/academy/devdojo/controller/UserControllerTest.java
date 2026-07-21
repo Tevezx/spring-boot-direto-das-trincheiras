@@ -3,6 +3,7 @@ package academy.devdojo.controller;
 import academy.devdojo.commons.FileUtils;
 import academy.devdojo.commons.UserUtils;
 import academy.devdojo.domain.User;
+import academy.devdojo.repository.ProfileRepository;
 import academy.devdojo.repository.UserRespository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
@@ -28,13 +29,15 @@ import java.util.stream.Stream;
 
 @WebMvcTest(controllers = UserController.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@ComponentScan(basePackages = "academy.devdojo")
+@ComponentScan(basePackages = {"academy.devdojo"})
 class UserControllerTest {
     private static final String URL = "/v1/users";
     @Autowired
     private MockMvc mockMvc;
     @MockitoBean
     private UserRespository repository;
+    @MockitoBean
+    private ProfileRepository profileRepository;
     @Autowired
     private FileUtils fileUtils;
     @Autowired
@@ -130,7 +133,7 @@ class UserControllerTest {
     void save_SavesUser_WhenSuccessFul() throws Exception {
         var request = fileUtils.readResourceFile("user/post-request-user-200.json");
         var response = fileUtils.readResourceFile("user/post-response-user-201.json");
-        var user = User.builder().id(3L).firstName("Paulo").lastName("Silva").email("paulo@gmail.com").build();
+        var user = userList.getFirst();
 
         BDDMockito.when(repository.save(ArgumentMatchers.any())).thenReturn(user);
 
