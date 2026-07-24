@@ -8,11 +8,11 @@ import java.util.List;
 
 @Component
 public class ProfileUtils {
-    public List<Profile> newProfileList() {
-        var carlos = Profile.builder().id(1L).name("Administrador").description("Perfil de Administrador").build();
-        var ana = Profile.builder().id(2L).name("Gerente").description("Perfil de Gerente").build();
+    public static List<Profile> newProfileList() {
+        var administrador = Profile.builder().id(1L).name("Administrador").description("Perfil de Administrador").build();
+        var gerente = Profile.builder().id(2L).name("Gerente").description("Perfil de Gerente").build();
 
-        return new ArrayList<>(List.of(carlos, ana));
+        return new ArrayList<>(List.of(administrador, gerente));
     }
 
     public Profile newProfileToSave() {
