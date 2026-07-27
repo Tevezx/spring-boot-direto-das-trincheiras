@@ -1,6 +1,8 @@
 package academy.devdojo.repository;
 
 import academy.devdojo.commons.ProfileUtils;
+import academy.devdojo.config.IntegrationTestConfig;
+import academy.devdojo.config.TestcontainersConfiguration;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +13,9 @@ import org.springframework.test.context.jdbc.Sql;
 
 @DataJpaTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@Import(ProfileUtils.class)
+@Import({ProfileUtils.class, TestcontainersConfiguration.class})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class ProfileRepositoryTest {
+class ProfileRepositoryTest extends IntegrationTestConfig {
     @Autowired
     private ProfileRepository repository;
     @Autowired
@@ -27,7 +29,7 @@ class ProfileRepositoryTest {
         var profileSave = repository.save(profile);
 
         Assertions.assertThat(profileSave).hasNoNullFieldsOrProperties();
-        Assertions.assertThat(profileSave.getId()).isEqualTo(1L);
+        Assertions.assertThat(profileSave.getId()).isPositive().isNotNull();
     }
 
     @Test

@@ -1,6 +1,8 @@
 package academy.devdojo.repository;
 
 import academy.devdojo.commons.UserUtils;
+import academy.devdojo.config.IntegrationTestConfig;
+import academy.devdojo.config.TestcontainersConfiguration;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +18,8 @@ import org.springframework.test.context.jdbc.Sql;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 // Com essa anotação do transcational, os testes vao rodar e o que acontecer no anterior vai ser mantido para o seguinte
 //@Transactional(propagation = Propagation.NOT_SUPPORTED)
-@Import(UserUtils.class)
-class UserRespositoryTest {
+@Import({UserUtils.class, TestcontainersConfiguration.class})
+class UserRespositoryTest extends IntegrationTestConfig {
     @Autowired
     private UserRespository respository;
     @Autowired
@@ -31,7 +33,7 @@ class UserRespositoryTest {
         var userSave = respository.save(user);
 
         Assertions.assertThat(userSave).hasNoNullFieldsOrProperties();
-        Assertions.assertThat(userSave.getId()).isEqualTo(1L);
+        Assertions.assertThat(userSave.getId()).isNotNull().isPositive();
     }
 
     @Test

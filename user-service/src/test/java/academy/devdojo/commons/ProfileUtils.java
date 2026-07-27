@@ -15,7 +15,7 @@ public class ProfileUtils {
         return new ArrayList<>(List.of(administrador, gerente));
     }
 
-    public Profile newProfileToSave() {
+    public static Profile newProfileToSave() {
         return Profile.builder().name("Administrador").description("Perfil de Administrador").build();
     }
 }

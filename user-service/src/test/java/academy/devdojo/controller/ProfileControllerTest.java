@@ -66,8 +66,22 @@ class ProfileControllerTest {
     }
 
     @Test
-    @DisplayName("GET v1/profiles/1 - Finding profile by id")
+    @DisplayName("GET v1/profiles - Finding all profiles when nothing is not found")
     @Order(2)
+    void findAll_ReturnsEmptyList_WhenNothingIsFound() throws Exception {
+        BDDMockito.when(repository.findAll()).thenReturn(List.of());
+
+        var response = fileUtils.readResourceFile("profile/get-find-all-empty-list-200.json");
+
+        mockMvc.perform(MockMvcRequestBuilders.get(URL))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json(response));
+    }
+
+    @Test
+    @DisplayName("GET v1/profiles/1 - Finding profile by id")
+    @Order(3)
     void findById_ReturnsProfile_WhenSuccessFul() throws Exception {
         var id = profileList.getFirst().getId();
         var response = fileUtils.readResourceFile("profile/get-find-by-id-1-200.json");
@@ -85,7 +99,7 @@ class ProfileControllerTest {
 
     @Test
     @DisplayName("GET v1/profiles/90 - Finding profile by id not exists throw NotFoundException")
-    @Order(3)
+    @Order(4)
     void findById_ThrowNotFoundException_WhenIdNotExists() throws Exception {
         var id = 90;
         var response = fileUtils.readResourceFile("profile/get-find-by-id-90-404.json");
@@ -98,7 +112,7 @@ class ProfileControllerTest {
 
     @Test
     @DisplayName("POST v1/profiles - Save profile when success ful")
-    @Order(4)
+    @Order(5)
     void save_SavesProfile_WhenSuccessFul() throws Exception {
         var request = fileUtils.readResourceFile("profile/post-request-profile-200.json");
         var response = fileUtils.readResourceFile("profile/post-response-profile-201.json");
@@ -118,7 +132,7 @@ class ProfileControllerTest {
     @ParameterizedTest
     @MethodSource(value = "postProfileBadRequest")
     @DisplayName("POST v1/profiles - Save profile when name and description is empty")
-    @Order(5)
+    @Order(6)
     void save_SavesProfile_WhenNameAndDescriptionEmpty(String fileName, List<String> errors) throws Exception {
         var request = fileUtils.readResourceFile("profile/%s".formatted(fileName));
 

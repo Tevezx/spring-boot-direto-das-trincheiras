@@ -1,5 +1,7 @@
 package academy.devdojo.repository;
 
+import academy.devdojo.config.IntegrationTestConfig;
+import academy.devdojo.config.TestcontainersConfiguration;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
@@ -7,11 +9,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class UserProfileRepositoryTest {
+@Import(TestcontainersConfiguration.class)
+class UserProfileRepositoryTest extends IntegrationTestConfig {
     @Autowired
     private UserProfileRepository repository;
 
