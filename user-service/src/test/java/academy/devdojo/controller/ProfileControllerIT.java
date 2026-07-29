@@ -15,13 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -47,22 +46,9 @@ public class ProfileControllerIT extends IntegrationTestConfig {
     private FileUtils fileUtils;
 
     @Test
-    @DisplayName("GET v1/profiles - Finding all profiles when nothing is found")
-    @Order(1)
-    void findAll_ReturnsEmptyList_WhenNothingIsFound() {
-        var typeReference = new ParameterizedTypeReference<List<ProfileGetResponse>>() {
-        };
-        var responseEntity = restTemplate.exchange(baseUrl() + URL, GET, null, typeReference);
-
-        Assertions.assertThat(responseEntity).isNotNull();
-        Assertions.assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        Assertions.assertThat(responseEntity.getBody()).isNotNull().isEmpty();
-    }
-
-    @Test
     @DisplayName("GET v1/profiles - Finding all profiles")
-    @Order(2)
     @Sql(value = "/sql/init_two_profile.sql")
+    @Order(1)
     void findAll_ReturnsProfiles_WhenSuccessFul() {
         var typeReference = new ParameterizedTypeReference<List<ProfileGetResponse>>() {
         };
@@ -76,6 +62,20 @@ public class ProfileControllerIT extends IntegrationTestConfig {
         responseEntity
                 .getBody()
                 .forEach(profileGetResponse -> Assertions.assertThat(profileGetResponse).hasNoNullFieldsOrProperties());
+    }
+
+    @Test
+    @DisplayName("GET v1/profiles - Finding all profiles when nothing is found")
+    @Sql("/sql/clean_profile.sql")
+    @Order(2)
+    void findAll_ReturnsEmptyList_WhenNothingIsFound() {
+        var typeReference = new ParameterizedTypeReference<List<ProfileGetResponse>>() {
+        };
+        var responseEntity = restTemplate.exchange(baseUrl() + URL, GET, null, typeReference);
+
+        Assertions.assertThat(responseEntity).isNotNull();
+        Assertions.assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        Assertions.assertThat(responseEntity.getBody()).isNotNull().isEmpty();
     }
 
     @Test

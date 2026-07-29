@@ -1,12 +1,1 @@
-[
-  {
-    "id": 1,
-    "name": "Administrador",
-    "description": "Perfil de Administrador"
-  },
-  {
-    "id": 2,
-    "name": "Gerente",
-    "description": "Perfil de Gerente"
-  }
-]
+[{"description":"Perfil de Administrador","id":1,"name":"Administrador"},{"description":"Perfil de Gerente","id":2,"name":"Gerente"}]

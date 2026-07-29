@@ -1,2 +1,2 @@
-insert into profile (id, description, name) values (1,'Perfil Administrador','Administrador')
-insert into profile (id, description, name) values (2,'Perfil Gerente','Gerente')
+insert into profile (id, name, description) values (1,'Administrador','Perfil de Administrador')
+insert into profile (id, name, description) values (2,'Gerente','Perfil de Gerente')

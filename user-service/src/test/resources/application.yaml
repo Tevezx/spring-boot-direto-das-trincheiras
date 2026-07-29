@@ -1,13 +1,22 @@
 spring:
+  # Ele vai dentro do resource e procura por schema.sql
+  # Dessa forma o banco fica fixo, nao fica dropando ou alterando table toda vez que se inicia
+  sql:
+    init:
+      mode: ALWAYS
 #  datasource:
 #    # Referenciando o banco h2 em memoria
 #    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MySQL;DATABASE_TO_LOWER=true
 #    username: sa
 #    password:
   jpa:
+    # Estou dizendo para o hibernate esperar o banco de dados carregar
+    defer-datasource-initialization: true
     show-sql: true
     hibernate:
-      ddl-auto: update
+      # Para simular produção, colocamos none
+      # Pois em producao o banco é fixo, nao fica atualizando toda vez que rodamos a aplicacao
+      ddl-auto: none
     # database-platform: org.hibernate.dialect.H2Dialect
     # properties:
       # hibernate:
