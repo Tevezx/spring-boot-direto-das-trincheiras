@@ -1,0 +1,2 @@
+insert into tb_user (email, first_name, last_name, id) values ('carlos@gmail.com','Carlos','Soares',1)
+insert into tb_user (email, first_name, last_name, id) values ('ana@gmail.com','Ana','Silva',2)

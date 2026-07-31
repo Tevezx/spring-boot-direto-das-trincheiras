@@ -20,7 +20,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -47,7 +46,7 @@ public class ProfileControllerIT extends IntegrationTestConfig {
 
     @Test
     @DisplayName("GET v1/profiles - Finding all profiles")
-    @Sql(value = "/sql/init_two_profile.sql")
+    @Sql(value = "/sql/profile/init_two_profile.sql")
     @Order(1)
     void findAll_ReturnsProfiles_WhenSuccessFul() {
         var typeReference = new ParameterizedTypeReference<List<ProfileGetResponse>>() {
@@ -66,7 +65,7 @@ public class ProfileControllerIT extends IntegrationTestConfig {
 
     @Test
     @DisplayName("GET v1/profiles - Finding all profiles when nothing is found")
-    @Sql("/sql/clean_profile.sql")
+    @Sql("/sql/profile/clean_profile.sql")
     @Order(2)
     void findAll_ReturnsEmptyList_WhenNothingIsFound() {
         var typeReference = new ParameterizedTypeReference<List<ProfileGetResponse>>() {

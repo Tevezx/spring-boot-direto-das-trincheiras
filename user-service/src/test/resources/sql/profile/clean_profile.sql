@@ -1,0 +1,2 @@
+DELETE FROM profile;
+ALTER TABLE profile AUTO_INCREMENT = 1;

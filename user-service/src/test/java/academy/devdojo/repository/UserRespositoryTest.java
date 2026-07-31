@@ -39,7 +39,7 @@ class UserRespositoryTest extends IntegrationTestConfig {
     @Test
     @DisplayName("Finding all users")
     @Order(2)
-    @Sql("/sql/init_one_user.sql")
+    @Sql("/sql/user/init_one_user.sql")
     void findAll_ReturnsUsers_WhenSuccessFul() {
         var users = respository.findAll();
         Assertions.assertThat(users).isNotEmpty();

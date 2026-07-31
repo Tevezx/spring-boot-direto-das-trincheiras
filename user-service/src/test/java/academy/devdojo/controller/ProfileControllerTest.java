@@ -116,7 +116,7 @@ class ProfileControllerTest {
     void save_SavesProfile_WhenSuccessFul() throws Exception {
         var request = fileUtils.readResourceFile("profile/post-request-profile-200.json");
         var response = fileUtils.readResourceFile("profile/post-response-profile-201.json");
-        var profile = Profile.builder().id(3L).name("Administrador").description("Perfil de Administrador").build();
+        var profile = Profile.builder().id(1L).name("Administrador").description("Perfil de Administrador").build();
 
         BDDMockito.when(repository.save(ArgumentMatchers.any())).thenReturn(profile);
 

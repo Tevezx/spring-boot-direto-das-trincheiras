@@ -35,7 +35,7 @@ class ProfileRepositoryTest extends IntegrationTestConfig {
     @Test
     @DisplayName("Find all profiles when success ful")
     @Order(2)
-    @Sql("/sql/init_one_profile.sql")
+    @Sql("/sql/profile/init_one_profile.sql")
     void findAll_ReturnsProfiles_WhenSuccessFul() {
         var profiles = repository.findAll();
         Assertions.assertThat(profiles).isNotEmpty();

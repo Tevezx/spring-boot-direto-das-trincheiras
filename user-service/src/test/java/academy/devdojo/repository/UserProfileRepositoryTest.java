@@ -22,7 +22,7 @@ class UserProfileRepositoryTest extends IntegrationTestConfig {
     @Test
     @DisplayName("Finding all user profile")
     @Order(1)
-    @Sql("/sql/init_two_user_one_profile.sql")
+    @Sql("/sql/user_profile/init_two_user_one_profile.sql")
     void findAll_ReturnsUsersProfiles_WhenSuccessFul() {
         var userProfileAll = repository.findAll();
         Assertions.assertThat(userProfileAll).isNotEmpty().hasSize(2).doesNotContainNull();
@@ -34,7 +34,7 @@ class UserProfileRepositoryTest extends IntegrationTestConfig {
     @Test
     @DisplayName("Finding all users by profile id")
     @Order(2)
-    @Sql("/sql/init_one_user_one_profile.sql")
+    @Sql("/sql/user_profile/init_one_user_one_profile.sql")
     void findAllUsersProfileById_WhenSuccessFul() {
         var userProfileUser = repository.findAllUsersByProfileId(1L);
         Assertions.assertThat(userProfileUser).isNotEmpty().hasSize(1);

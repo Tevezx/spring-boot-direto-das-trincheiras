@@ -2,10 +2,8 @@ package academy.devdojo.controller;
 
 import academy.devdojo.commons.FileUtils;
 import academy.devdojo.config.IntegrationTestConfig;
-import academy.devdojo.config.TestcontainersConfiguration;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import io.restassured.response.ValidatableResponse;
 import net.javacrumbs.jsonunit.assertj.JsonAssertions;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.*;
@@ -15,16 +13,13 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
 
-import java.io.IOException;
 import java.util.stream.Stream;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@Import(TestcontainersConfiguration.class)
 public class ProfileControllerRestAssuredIT extends IntegrationTestConfig {
     private final static String URL = "/v1/profiles";
     @LocalServerPort
@@ -40,7 +35,8 @@ public class ProfileControllerRestAssuredIT extends IntegrationTestConfig {
 
     @Test
     @DisplayName("GET v1/profiles - Finding all profiles")
-    @Sql(value = "/sql/init_two_profile.sql")
+    @Sql(value = "/sql/profile/init_two_profile.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = "/sql/profile/clean_profile.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Order(1)
     void findAll_ReturnsProfiles_WhenSuccessFul() {
         var response = fileUtils.readResourceFile("profile/get-all-profiles-200.json");
@@ -56,7 +52,6 @@ public class ProfileControllerRestAssuredIT extends IntegrationTestConfig {
 
     @Test
     @DisplayName("GET v1/profiles - Finding all profiles when nothing is found")
-    @Sql("/sql/clean_profile.sql")
     @Order(2)
     void findAll_ReturnsEmptyList_WhenNothingIsFound() {
         var response = fileUtils.readResourceFile("profile/get-find-all-empty-list-200.json");
