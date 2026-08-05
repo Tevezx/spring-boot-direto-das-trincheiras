@@ -31,7 +31,7 @@ import java.util.stream.Stream;
 
 @WebMvcTest(controllers = AnimeController.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@ComponentScan(basePackages = "academy.devdojo")
+@ComponentScan(basePackages = {"academy.devdojo"})
 //@ActiveProfiles("test")
 class AnimeControllerTest {
     private static final String URL = "/v1/animes";

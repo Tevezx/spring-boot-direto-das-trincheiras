@@ -35,6 +35,7 @@
         <datasource-proxy-spring-boot-starter.version>1.9.2</datasource-proxy-spring-boot-starter.version>
         <json-unit-assertj.version>6.0.1</json-unit-assertj.version>
         <rest-assured.version>6.0.1</rest-assured.version>
+        <springdoc-openapi-starter-webmvc-ui.version>3.0.3</springdoc-openapi-starter-webmvc-ui.version>
     </properties>
     <dependencies>
         <!-- Biblioteca compartilhada com utilitários e código comum do projeto -->
@@ -162,6 +163,14 @@
             <version>${rest-assured.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- Documentação da API, podemos deixar no commons-core -->
+<!--        <dependency>-->
+<!--            <groupId>org.springdoc</groupId>-->
+<!--            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>-->
+<!--            <version>${springdoc-openapi-starter-webmvc-ui.version}</version>-->
+<!--        </dependency>-->
+
     </dependencies>
 
     <build>

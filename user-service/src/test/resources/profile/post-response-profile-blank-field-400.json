@@ -1,1 +1,7 @@
-{"timestamp":"2026-07-27T13:28:15.090Z","status":400,"error":"Bad Request","path":"/v1/profiles"}
+{
+  "error": "Bad Request",
+  "message": "The field 'description' cannot be null, The field 'name' cannot be null",
+  "path": "/v1/profiles",
+  "status": 400,
+  "timestamp": "2026-08-04T11:05:16.1766296-03:00"
+}

@@ -9,6 +9,7 @@ import academy.devdojo.service.AnimeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -48,8 +49,9 @@ public class AnimeController {
     }
 
     // Paginação
+    // @ParameterObject -> serve para a paginacao ter inicio e fim no swager
     @GetMapping("/paginated")
-    public ResponseEntity<Page<AnimeGetResponse>> findAll(Pageable pageable) {
+    public ResponseEntity<Page<AnimeGetResponse>> findAll(@ParameterObject Pageable pageable) {
         log.debug("List all animes paginated");
 
         // Busco o metodo de paginacao no meu service, que retorna uma page de anime
